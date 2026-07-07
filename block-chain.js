@@ -18,4 +18,4 @@ const blockChain = (data, prev = { index: 0, hash: '0' }) => {
   return block;
 };
 
-module.exports = { blockChain };
+export { blockChain };
