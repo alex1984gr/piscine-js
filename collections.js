@@ -26,5 +26,12 @@ const superTypeOf = (arg) => {
   if (arg instanceof Map) return 'Map';
   if (arg instanceof Set) return 'Set';
   if (Array.isArray(arg)) return 'Array';
-  return Object.prototype.toString.call(arg).slice(8, -1);
+
+  const type = typeof arg;
+  if (type === 'object' || type === 'function') {
+    const tag = Object.prototype.toString.call(arg).slice(8, -1);
+    return tag === 'Object' ? 'Object' : tag;
+  }
+
+  return type[0].toUpperCase() + type.slice(1);
 };
