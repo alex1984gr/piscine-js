@@ -4,7 +4,9 @@ function sums(num) {
   
   function findPartitions(remaining, start, current) {
     if (remaining === 0) {
-      result.push([...current]);
+      if (current.length > 1) {
+        result.push([...current]);
+      }
       return;
     }
     for (let i = start; i <= remaining; i++) {
