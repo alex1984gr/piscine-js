@@ -1,11 +1,20 @@
 function crosswordSolver(puzzle, words) {
-    // Parse the grid
-    const grid = puzzle.split('\n').map(row => row.split(''));
-    const rows = grid.length;
-    if (rows === 0) {
+    // Type validation
+    if (typeof puzzle !== 'string' || !Array.isArray(words)) {
         console.log('Error');
         return;
     }
+    
+    // Parse the grid
+    const grid = puzzle.split('\n').map(row => row.split(''));
+    const rows = grid.length;
+    
+    // Handle empty puzzle
+    if (rows === 0 || (rows === 1 && grid[0].length === 1 && grid[0][0] === '')) {
+        console.log('Error');
+        return;
+    }
+    
     const cols = grid[0].length;
     
     // Validate grid dimensions are consistent
