@@ -1,13 +1,21 @@
 function trunc(n) {
-  if (n === 0) return 0;
-  if (n > 0) {
-    let result = 0;
-    while (result + 1 <= n) result++;
-    return result;
-  }
+  if (!isFinite(n) || n === 0 || n === -0) return n;
+  const sign = n < 0 ? -1 : 1;
+  n = n < 0 ? -n : n;
+  if (n < 1) return 0;
+
   let result = 0;
-  while (result - 1 >= n) result--;
-  return result;
+  let step = 1;
+  while (result + step * 10 <= n) {
+    step *= 10;
+  }
+  while (step >= 1) {
+    while (result + step <= n) {
+      result += step;
+    }
+    step = step / 10;
+  }
+  return sign * result;
 }
 
 function floor(n) {
