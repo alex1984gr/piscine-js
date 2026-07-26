@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crossword Solver Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🧩 Crossword Solver Tests</h1>
+    <p>Open console (F12) to see detailed output</p>
+    <div id="output"></div>
+
+    <script type="module">
+        import { crosswordSolver } from './crosswordSolver.js';
+
+        const output = document.getElementById('output');
+
+        function test(name, puzzle, words, expected, callback) {
+            const div = document.createElement('div');
+            div.style.margin = '20px 0';
+            div.style.padding = '10px';
+            div.style.border = '1px solid #ccc';
+            div.style.borderRadius = '4px';
+
+            const title = document.createElement('h3');
+            title.textContent = `Test: ${name}`;
+            div.appendChild(title);
+
+            const resultPre = document.createElement('pre');
+            const originalLog = console.log;
+            let captured = [];
+            console.log = (...args) => {
+                captured.push(args.join(' '));
+                originalLog.apply(console, args);
+                resultPre.textContent += args.join(' ') + '\n';
+            };
+
+            try {
+                crosswordSolver(puzzle, words);
+            } catch(e) {
+                resultPre.textContent += e.toString() + '\n';
+                console.log = originalLog;
+                const status = document.createElement('div');
+                status.textContent = '❌ CRASH';
+                status.style.color = 'red';
+                div.appendChild(status);
+                div.appendChild(resultPre);
+                output.appendChild(div);
+                return;
+            }
+
+            console.log = originalLog;
+
+            const result = captured.join('\n').replace(/\r/g, '');
+            
+            const status = document.createElement('div');
+            if (expected === 'Error') {
+                const isError = result === 'Error' || result === '';
+                status.textContent = isError ? '✅ PASS (Error)' : '❌ FAIL';
+                status.style.color = isError ? 'green' : 'red';
+                if (!isError) {
+                    resultPre.textContent += '(expected Error)\n';
+                }
+            } else {
+                const cleanedExpected = expected.replace(/\r/g, '');
+                const passed = result === cleanedExpected;
+                status.textContent = passed ? '✅ PASS' : '❌ FAIL';
+                status.style.color = passed ? 'green' : 'red';
+                if (!passed) {
+                    const expectedPre = document.createElement('pre');
+                    expectedPre.textContent = `Expected:\n${cleanedExpected}`;
+                    expectedPre.style.background = '#ffe0e0';
+                    div.appendChild(expectedPre);
+                }
+            }
+
+            div.appendChild(status);
+            div.appendChild(resultPre);
+            output.appendChild(div);
+        }
+
+        // Test cases
+        test('Basic example',
+            '2001\n0..0\n1000\n0..0',
+            ['casa', 'alan', 'ciao', 'anta'],
+            'casa\ni..l\nanta\no..n'
+        );
+
+        test('Large puzzle',
+            `...1...........
+..1000001000...
+...0....0......
+.1......0...1..
+.0....100000000
+100000..0...0..
+.0.....1001000.
+.0.1....0.0....
+.10000000.0....
+.0.0......0....
+.0.0.....100...
+...0......0....
+..........0....`,
+            ['sun', 'sunglasses', 'suncream', 'swimming', 'bikini', 'beach', 'icecream', 'tan', 'deckchair', 'sand', 'seaside', 'sandals'],
+            '...s...........\n..sunglasses...\n...n....u......\n.s......n...s..\n.w....deckchair\nbikini..r...n..\n.m.....seaside.\n.m.b....a.a....\n.icecream.n....\n.n.a......d....\n.g.c.....tan...\n...h......l....\n..........s....'
+        );
+
+        test('Food puzzle',
+            `..1.1..1...
+10000..1000
+..0.0..0...
+..1000000..
+..0.0..0...
+1000..10000
+..0.1..0...
+....0..0...
+..100000...
+....0..0...
+....0......`,
+            ['popcorn', 'fruit', 'flour', 'chicken', 'eggs', 'vegetables', 'pasta', 'pork', 'steak', 'cheese'],
+            '..p.f..v...\nflour..eggs\n..p.u..g...\n..chicken..\n..o.t..t...\npork..pasta\n..n.s..b...\n....t..l...\n..cheese...\n....a..s...\n....k......'
+        );
+
+        test('Reversed words',
+            `...1...........
+..1000001000...
+...0....0......
+.1......0...1..
+.0....100000000
+100000..0...0..
+.0.....1001000.
+.0.1....0.0....
+.10000000.0....
+.0.0......0....
+.0.0.....100...
+...0......0....
+..........0....`,
+            ['sun', 'sunglasses', 'suncream', 'swimming', 'bikini', 'beach', 'icecream', 'tan', 'deckchair', 'sand', 'seaside', 'sandals'].reverse(),
+            '...s...........\n..sunglasses...\n...n....u......\n.s......n...s..\n.w....deckchair\nbikini..r...n..\n.m.....seaside.\n.m.b....a.a....\n.icecream.n....\n.n.a......d....\n.g.c.....tan...\n...h......l....\n..........s....'
+        );
+
+        test('Mismatched count',
+            '2001\n0..0\n2000\n0..0',
+            ['casa', 'alan', 'ciao', 'anta'],
+            'Error'
+        );
+
+        test('Number > 2',
+            '0001\n0..0\n3000\n0..0',
+            ['casa', 'alan', 'ciao', 'anta'],
+            'Error'
+        );
+
+        test('Duplicate words',
+            '2001\n0..0\n1000\n0..0',
+            ['casa', 'casa', 'ciao', 'anta'],
+            'Error'
+        );
+
+        test('Empty puzzle',
+            '',
+            ['casa', 'alan', 'ciao', 'anta'],
+            'Error'
+        );
+
+        test('Wrong puzzle type (number)',
+            123,
+            ['casa', 'alan', 'ciao', 'anta'],
+            'Error'
+        );
+
+        test('Wrong words type (number)',
+            '',
+            123,
+            'Error'
+        );
+
+        test('Multiple solutions',
+            '2000\n0...\n0...\n0...',
+            ['abba', 'assa'],
+            'Error'
+        );
+
+        test('No solution',
+            '2001\n0..0\n1000\n0..0',
+            ['aaab', 'aaac', 'aaad', 'aaae'],
+            'Error'
+        );
+    </script>
+</body>
+</html>
