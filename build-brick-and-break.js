@@ -1,7 +1,7 @@
 let brickCount = 0
 let interval = null
 
-const build = (count) => {
+export const build = (count) => {
     brickCount = 0
     interval = setInterval(() => {
         brickCount++
@@ -14,7 +14,7 @@ const build = (count) => {
     }, 100)
 }
 
-const repair = (...ids) => {
+export const repair = (...ids) => {
     ids.forEach(id => {
         const el = document.getElementById(id)
         if (!el) return
@@ -22,7 +22,7 @@ const repair = (...ids) => {
     })
 }
 
-const destroy = () => {
-    const bricks = document.querySelectorAll('div:not(#tools)')
+export const destroy = () => {
+    const bricks = document.querySelectorAll('div')
     if (bricks.length) bricks[bricks.length - 1].remove()
 }
