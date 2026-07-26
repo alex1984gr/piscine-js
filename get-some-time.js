@@ -38,29 +38,28 @@ function firstDayWeek(week, year) {
     const targetYear = Number(year);
     const targetWeek = Number(week);
 
-    // ISO week rules: week 1 is the week with Jan 4th, weeks start on Monday.
+    // Use rule: week 1 is the week that contains Jan 1, weeks start on Monday.
     const daysInTargetYear = isLeapYear(targetYear) ? 366 : 365;
 
-    // Day-of-week for Jan 4 (Sakamoto: 0=Sun,1=Mon,...6=Sat)
-    const jan4Dow = getDayOfWeek(targetYear, 1, 4);
-    const isoJan4 = jan4Dow === 0 ? 7 : jan4Dow; // ISO: 1=Mon..7=Sun
+    // Day-of-week for Jan 1 (Sakamoto: 0=Sun,1=Mon,...6=Sat)
+    const jan1Dow = getDayOfWeek(targetYear, 1, 1);
+    const isoJan1 = jan1Dow === 0 ? 7 : jan1Dow; // 1=Mon..7=Sun
 
-    // Monday of week 1 as day-of-year (may be <= 0 or > daysInTargetYear)
-    let weekOneMondayDayOfYear = 4 - (isoJan4 - 1); // = 5 - isoJan4
+    // day-of-year for Monday of week 1 (may be <=0 if it falls in previous year)
+    let weekOneMondayDayOfYear = 1 - (isoJan1 - 1); // = 2 - isoJan1
 
     let targetDayOfYear = weekOneMondayDayOfYear + (targetWeek - 1) * 7;
     let outYear = targetYear;
 
     if (targetDayOfYear < 1) {
-        // If the computed Monday falls before Jan 1 of the target year,
-        // clamp to Jan 1 (tests expect week1 to map to 01-01 when this happens).
-        targetDayOfYear = 1;
-        outYear = targetYear;
+        // falls into previous year
+        outYear = targetYear - 1;
+        const daysPrev = isLeapYear(outYear) ? 366 : 365;
+        targetDayOfYear = daysPrev + targetDayOfYear;
     } else if (targetDayOfYear > daysInTargetYear) {
-        // If the computed Monday falls after Dec 31 of the target year,
-        // clamp to Dec 31 of the target year. (Matches test expectations for in-year mapping.)
-        targetDayOfYear = daysInTargetYear;
-        outYear = targetYear;
+        // falls into next year
+        targetDayOfYear = targetDayOfYear - daysInTargetYear;
+        outYear = targetYear + 1;
     }
 
     const { day, month } = getDateFromDayOfYear(targetDayOfYear, outYear);
