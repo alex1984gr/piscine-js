@@ -15,13 +15,13 @@ export const getClassical = () => {
 export const getActive = () => {
     const classical = Array.from(document.querySelectorAll('a.classical'))
     return [
-        classical.filter(el => !el.classList.contains('inactive')),
-        classical.filter(el => el.classList.contains('inactive')),
+        classical.filter(el => el.classList.contains('active')),
+        classical.filter(el => !el.classList.contains('active')),
     ]
 }
 
 export const getBonannoPisano = () => {
-    const active = Array.from(document.querySelectorAll('a.classical:not(.inactive)'))
+    const active = Array.from(document.querySelectorAll('a.classical.active'))
     const bonanno = document.getElementById('BonannoPisano')
     return [
         bonanno,
