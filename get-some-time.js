@@ -38,20 +38,35 @@ function firstDayWeek(week, year) {
     const targetYear = Number(year);
     const targetWeek = Number(week);
 
-    const jan1DayOfWeek = getDayOfWeek(targetYear, 1, 1);
-    const diff = jan1DayOfWeek === 0 ? -6 : 1 - jan1DayOfWeek;
-    let weekOneDayOfYear = 1 + diff;
+    // ISO week rules: week 1 is the week with Jan 4th, weeks start on Monday.
+    const daysInTargetYear = isLeapYear(targetYear) ? 366 : 365;
 
-    if (weekOneDayOfYear < 1) {
-        weekOneDayOfYear = 1;
+    // Day-of-week for Jan 4 (Sakamoto: 0=Sun,1=Mon,...6=Sat)
+    const jan4Dow = getDayOfWeek(targetYear, 1, 4);
+    const isoJan4 = jan4Dow === 0 ? 7 : jan4Dow; // ISO: 1=Mon..7=Sun
+
+    // Monday of week 1 as day-of-year (may be <= 0 or > daysInTargetYear)
+    let weekOneMondayDayOfYear = 4 - (isoJan4 - 1); // = 5 - isoJan4
+
+    let targetDayOfYear = weekOneMondayDayOfYear + (targetWeek - 1) * 7;
+    let outYear = targetYear;
+
+    if (targetDayOfYear < 1) {
+        // falls into previous year
+        outYear = targetYear - 1;
+        const daysPrev = isLeapYear(outYear) ? 366 : 365;
+        targetDayOfYear = daysPrev + targetDayOfYear;
+    } else if (targetDayOfYear > daysInTargetYear) {
+        // falls into next year
+        targetDayOfYear = targetDayOfYear - daysInTargetYear;
+        outYear = targetYear + 1;
     }
 
-    const targetDayOfYear = weekOneDayOfYear + (targetWeek - 1) * 7;
-    const { day, month } = getDateFromDayOfYear(targetDayOfYear, targetYear);
+    const { day, month } = getDateFromDayOfYear(targetDayOfYear, outYear);
 
     const dd = String(day).padStart(2, '0');
     const mm = String(month).padStart(2, '0');
-    const yyyy = String(targetYear).padStart(4, '0');
+    const yyyy = String(outYear).padStart(4, '0');
 
     return `${dd}-${mm}-${yyyy}`;
 }
