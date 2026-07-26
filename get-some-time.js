@@ -10,20 +10,14 @@ function daysInMonth(year, month) {
 }
 
 function getDayOfWeek(year, month, day) {
-    let y = year;
-    let m = month;
-
-    if (m < 3) {
-        y -= 1;
-        m += 12;
-    }
-
-    const k = y % 100;
-    const j = Math.floor(y / 100);
-    const h = (day + Math.floor((13 * (m + 1)) / 5) + k + Math.floor(k / 4) + Math.floor(j / 4) + 5 * j) % 7;
-
-    // Zeller's Congruence: 0 = Saturday, 1 = Sunday, 2 = Monday, ...
-    return (h + 6) % 7;
+    // Sakamoto's algorithm: returns 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    let y = Number(year);
+    const m = Number(month);
+    const d = Number(day);
+    const t = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4];
+    if (m < 3) y -= 1;
+    const w = (y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) + t[m - 1] + d) % 7;
+    return (w + 7) % 7; // ensure non-negative
 }
 
 function getDateFromDayOfYear(dayOfYear, year) {
