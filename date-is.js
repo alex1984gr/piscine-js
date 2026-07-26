@@ -1,36 +1,30 @@
+function toDate(value) {
+    if (value instanceof Date) return value;
+    if (typeof value === 'number') return new Date(value);
+    return value;
+}
+
 function isValid(date) {
-    if (date instanceof Date) {
-        return !isNaN(date.getTime());
-    }
-    if (typeof date === 'number' || typeof date === 'string') {
-        const d = new Date(date);
-        return !isNaN(d.getTime());
-    }
-    return false;
+    const d = toDate(date);
+    return d instanceof Date && !isNaN(d.getTime());
 }
 
 function isAfter(date1, date2) {
     if (!isValid(date1) || !isValid(date2)) return false;
-    const d1 = date1 instanceof Date ? date1 : new Date(date1);
-    const d2 = date2 instanceof Date ? date2 : new Date(date2);
-    return d1.getTime() > d2.getTime();
+    return toDate(date1).getTime() > toDate(date2).getTime();
 }
 
 function isBefore(date1, date2) {
     if (!isValid(date1) || !isValid(date2)) return false;
-    const d1 = date1 instanceof Date ? date1 : new Date(date1);
-    const d2 = date2 instanceof Date ? date2 : new Date(date2);
-    return d1.getTime() < d2.getTime();
+    return toDate(date1).getTime() < toDate(date2).getTime();
 }
 
 function isFuture(date) {
     if (!isValid(date)) return false;
-    const d = date instanceof Date ? date : new Date(date);
-    return d.getTime() > Date.now();
+    return toDate(date).getTime() > Date.now();
 }
 
 function isPast(date) {
     if (!isValid(date)) return false;
-    const d = date instanceof Date ? date : new Date(date);
-    return d.getTime() < Date.now();
+    return toDate(date).getTime() < Date.now();
 }
