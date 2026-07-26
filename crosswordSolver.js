@@ -1,4 +1,4 @@
-function crosswordSolver(puzzle, words) {
+export function crosswordSolver(puzzle, words) {
     // Type validation
     if (typeof puzzle !== 'string' || !Array.isArray(words)) {
         console.log('Error');
