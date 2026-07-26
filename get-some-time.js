@@ -38,27 +38,13 @@ function firstDayWeek(week, year) {
     const targetYear = Number(year);
     const targetWeek = Number(week);
 
-    // Use rule: week 1 is the week that contains Jan 1, weeks start on Monday.
+    // Week 1 starts on Jan 1; each subsequent week starts 7 days later
     const daysInTargetYear = isLeapYear(targetYear) ? 366 : 365;
-
-    // Day-of-week for Jan 1 (Sakamoto: 0=Sun,1=Mon,...6=Sat)
-    const jan1Dow = getDayOfWeek(targetYear, 1, 1);
-    const isoJan1 = jan1Dow === 0 ? 7 : jan1Dow; // 1=Mon..7=Sun
-
-    // day-of-year for Monday of week 1 (may be <=0 if it falls in previous year)
-    let weekOneMondayDayOfYear = 1 - (isoJan1 - 1); // = 2 - isoJan1
-
-    let targetDayOfYear = weekOneMondayDayOfYear + (targetWeek - 1) * 7;
+    let targetDayOfYear = 1 + (targetWeek - 1) * 7;
     let outYear = targetYear;
 
-    if (targetDayOfYear < 1) {
-        // falls into previous year
-        outYear = targetYear - 1;
-        const daysPrev = isLeapYear(outYear) ? 366 : 365;
-        targetDayOfYear = daysPrev + targetDayOfYear;
-    } else if (targetDayOfYear > daysInTargetYear) {
-        // falls into next year
-        targetDayOfYear = targetDayOfYear - daysInTargetYear;
+    if (targetDayOfYear > daysInTargetYear) {
+        targetDayOfYear -= daysInTargetYear;
         outYear = targetYear + 1;
     }
 
