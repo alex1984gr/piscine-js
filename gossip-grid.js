@@ -63,7 +63,7 @@ export const grid = () => {
         if (w) div.style.width = `${w.value}px`
         if (f) div.style.fontSize = `${f.value}px`
         if (b) div.style.background = `hsl(280, 50%, ${b.value}%)`
-        document.body.append(div)
+        document.body.insertBefore(div, form.nextSibling)
     }
 
     gossips.forEach(addCard)
