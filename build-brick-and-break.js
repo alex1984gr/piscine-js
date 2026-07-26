@@ -9,7 +9,7 @@ const build = (count) => {
         brick.id = `brick-${brickCount}`
         const col = ((brickCount - 1) % 3) + 1
         if (col === 2) brick.dataset.foundation = 'true'
-        document.getElementById('tower').append(brick)
+        document.body.append(brick)
         if (brickCount >= count) clearInterval(interval)
     }, 100)
 }
@@ -23,6 +23,6 @@ const repair = (...ids) => {
 }
 
 const destroy = () => {
-    const tower = document.getElementById('tower')
-    if (tower.lastElementChild) tower.lastElementChild.remove()
+    const bricks = document.querySelectorAll('div:not(#tools)')
+    if (bricks.length) bricks[bricks.length - 1].remove()
 }
