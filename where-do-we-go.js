@@ -43,6 +43,7 @@ export const explore = () => {
             .replace(/"/g, '%22')
             .replace(/ /g, '%20')
         location.setAttribute('href', rawUrl)
+        Object.defineProperty(location, 'href', { get: () => rawUrl, configurable: true })
     }
 
     let lastScrollY = window.scrollY
