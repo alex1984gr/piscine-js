@@ -10,7 +10,7 @@ const reduceEntries = (obj, fn, init) => {
 }
 
 const totalCalories = (cart) =>
-    reduceEntries(cart, (acc, [name, grams]) => acc + nutritionDB[name].calories * grams / 100, 0)
+    Math.round(reduceEntries(cart, (acc, [name, grams]) => acc + nutritionDB[name].calories * grams / 100, 0) * 10) / 10
 
 const lowCarbs = (cart) =>
     filterEntries(cart, ([name, grams]) => nutritionDB[name].carbs * grams / 100 < 50)
