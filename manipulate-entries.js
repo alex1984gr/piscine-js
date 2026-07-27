@@ -21,6 +21,6 @@ const cartTotal = (cart) =>
     mapEntries(cart, ([name, grams]) => [
         name,
         mapEntries(nutritionDB[name], ([nutrient, per100]) =>
-            [nutrient, round1(per100 * grams / 100)]
+            [nutrient, per100 * grams / 100]
         )
     ])
