@@ -48,12 +48,12 @@ export const grid = () => {
     form.addEventListener('submit', (e) => {
         e.preventDefault()
         if (!textarea.value.trim()) return
-        addCard(textarea.value.trim())
+        addCard(textarea.value.trim(), true)
         textarea.value = ''
     })
     document.body.append(form)
 
-    const addCard = (text) => {
+    const addCard = (text, prepend = false) => {
         const div = document.createElement('div')
         div.className = 'gossip fade-in'
         div.textContent = text
@@ -63,7 +63,8 @@ export const grid = () => {
         if (w) div.style.width = `${w.value}px`
         if (f) div.style.fontSize = `${f.value}px`
         if (b) div.style.background = `hsl(280, 50%, ${b.value}%)`
-        document.body.insertBefore(div, form.nextSibling)
+        if (prepend) document.body.insertBefore(div, form.nextSibling)
+        else document.body.append(div)
     }
 
     gossips.forEach(addCard)
