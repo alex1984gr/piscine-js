@@ -33,7 +33,11 @@ export const explore = () => {
         const place = sorted[index]
         location.textContent = `${place.name}\n${place.coordinates}`
         location.style.color = place.color
-        location.href = `https://www.google.com/maps?q=${encodeURIComponent(place.coordinates)}`
+        const encodedCoords = place.coordinates
+            .replace(/°/g, '%C2%B0')
+            .replace(/"/g, '%22')
+            .replace(/ /g, '%20')
+        location.href = `https://www.google.com/maps?q=${encodedCoords}`
     }
 
     let lastScrollY = window.scrollY
