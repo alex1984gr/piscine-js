@@ -31,15 +31,14 @@ export const explore = () => {
         const mid = window.scrollY + window.innerHeight / 2
         const index = Math.min(Math.floor(mid / window.innerHeight), sorted.length - 1)
         const place = sorted[index]
-        location.textContent = `${place.name}\n${place.coordinates}`
+        location.textContent = `${place.name}\n${place.coordinates.replace(/'/g, '%27')}`
         location.style.color = place.color
         const encodedCoords = place.coordinates
             .replace(/°/g, '%C2%B0')
+            .replace(/'/g, '%27')
             .replace(/"/g, '%22')
             .replace(/ /g, '%20')
-        const a = document.createElement('a')
-        a.href = `https://www.google.com/maps?q=${encodedCoords}`
-        location.setAttribute('href', a.href.replace(/%27/g, "'"))
+        location.setAttribute('href', `https://www.google.com/maps?q=${encodedCoords}`)
     }
 
     let lastScrollY = window.scrollY
