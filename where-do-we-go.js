@@ -37,7 +37,9 @@ export const explore = () => {
             .replace(/°/g, '%C2%B0')
             .replace(/"/g, '%22')
             .replace(/ /g, '%20')
-        location.setAttribute('href', `https://www.google.com/maps?q=${encodedCoords}`)
+        const a = document.createElement('a')
+        a.href = `https://www.google.com/maps?q=${encodedCoords}`
+        location.setAttribute('href', a.href.replace(/%27/g, "'"))
     }
 
     let lastScrollY = window.scrollY
