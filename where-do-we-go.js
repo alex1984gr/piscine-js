@@ -31,14 +31,9 @@ export const explore = () => {
         const mid = window.scrollY + window.innerHeight / 2
         const index = Math.min(Math.floor(mid / window.innerHeight), sorted.length - 1)
         const place = sorted[index]
-        location.textContent = `${place.name}\n${place.coordinates.replace(/'/g, '%27')}`
+        location.textContent = `${place.name}\n${place.coordinates}`
         location.style.color = place.color
-        const encodedCoords = place.coordinates
-            .replace(/°/g, '%C2%B0')
-            .replace(/'/g, '%27')
-            .replace(/"/g, '%22')
-            .replace(/ /g, '%20')
-        location.setAttribute('href', `https://www.google.com/maps?q=${encodedCoords}`)
+        location.setAttribute('href', `https://www.google.com/maps?q=${place.coordinates}`)
     }
 
     let lastScrollY = window.scrollY
