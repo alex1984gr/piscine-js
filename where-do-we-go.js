@@ -13,7 +13,7 @@ export const explore = () => {
 
     sorted.forEach(({ name, coordinates, color }) => {
         const section = document.createElement('section')
-        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+        const slug = name.split(',')[0].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
         section.style.background = `url('./where-do-we-go_images/${slug}.jpg') center/cover no-repeat`
         document.body.append(section)
     })
