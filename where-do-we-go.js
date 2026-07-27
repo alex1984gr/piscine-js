@@ -1,15 +1,20 @@
 import { places } from './where-do-we-go.data.js'
 
-const toDecimal = (coords) => {
-    const match = coords.match(/(\d+)°(\d+)'([\d.]+)"([NS])/)
-    if (!match) return 0
-    const [, deg, min, sec, dir] = match
-    const val = Number(deg) + Number(min) / 60 + Number(sec) / 3600
-    return dir === 'N' ? val : -val
+const parseDMS = (coords) => {
+    const latM = coords.match(/(\d+)°(\d+)'([\d.]+)"([NS])/)
+    const lonM = coords.match(/(\d+)°(\d+)'([\d.]+)"([EW])/)
+    if (!latM || !lonM) return null
+    const lat = (Number(latM[1]) + Number(latM[2]) / 60 + Number(latM[3]) / 3600) * (latM[4] === 'N' ? 1 : -1)
+    const lon = (Number(lonM[1]) + Number(lonM[2]) / 60 + Number(lonM[3]) / 3600) * (lonM[4] === 'E' ? 1 : -1)
+    return { lat, lon, latDecimal: lat.toFixed(6), lonDecimal: lon.toFixed(6) }
 }
 
 export const explore = () => {
-    const sorted = [...places].sort((a, b) => toDecimal(b.coordinates) - toDecimal(a.coordinates))
+    const sorted = [...places].sort((a, b) => {
+        const aLat = parseDMS(a.coordinates)?.lat ?? 0
+        const bLat = parseDMS(b.coordinates)?.lat ?? 0
+        return bLat - aLat
+    })
 
     sorted.forEach(({ name, coordinates, color }) => {
         const section = document.createElement('section')
@@ -33,7 +38,9 @@ export const explore = () => {
         const place = sorted[index]
         location.textContent = `${place.name}\n${place.coordinates}`
         location.style.color = place.color
-        location.setAttribute('href', `https://www.google.com/maps?q=${place.coordinates}`)
+        const dec = parseDMS(place.coordinates)
+        const q = dec ? `${dec.latDecimal},${dec.lonDecimal}` : place.coordinates
+        location.setAttribute('href', `https://www.google.com/maps?q=${q}`)
     }
 
     let lastScrollY = window.scrollY
