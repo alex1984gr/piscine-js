@@ -55,7 +55,7 @@ export const grid = () => {
 
     const addCard = (text, prepend = false) => {
         const div = document.createElement('div')
-        div.className = 'gossip fade-in'
+        div.className = prepend ? 'gossip fade-in' : 'gossip'
         div.textContent = text
         const w = document.getElementById('width')
         const f = document.getElementById('fontSize')
@@ -67,5 +67,5 @@ export const grid = () => {
         else document.body.append(div)
     }
 
-    gossips.forEach(addCard)
+    gossips.slice().reverse().forEach(g => addCard(g, true))
 }
