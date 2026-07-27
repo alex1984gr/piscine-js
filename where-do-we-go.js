@@ -38,9 +38,7 @@ export const explore = () => {
         const place = sorted[index]
         location.textContent = `${place.name}\n${place.coordinates}`
         location.style.color = place.color
-        const dec = parseDMS(place.coordinates)
-        const q = dec ? `${dec.latDecimal},${dec.lonDecimal}` : place.coordinates
-        location.setAttribute('href', `https://www.google.com/maps?q=${q}`)
+        location.href = `https://www.google.com/maps?q=${place.coordinates}`
     }
 
     let lastScrollY = window.scrollY
